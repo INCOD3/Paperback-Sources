@@ -39,11 +39,60 @@ export class Lilymanga extends Source {
     }
     
     getMangaDetails(data: any, metadata: any): Manga[] {
-      let manga: Manga[] = []                           // For your getMangaDetailsRequest URL request, fill this object out with each manga
-      let $ = this.cheerio.load(data)                   // CheerioJS has been loaded with the HTML response, use this to fill out your objects
+      let result = JSON.parse(data);
 
-      // manga.push(createManga({...}))                 For each object, ALWAYS wrap it in the create tag. createManga({..}), createIconText({...}), etc
-      throw new Error("Method not implemented.")
+    let mangas = [];
+    for (let mangaDetails of result["result"]) {
+      mangas.push(createManga({
+        id: mangaDetails["id"].toString(),
+        titles: mangaDetails["titles"],
+        image: mangaDetails["image"] ?? "https://mangadex.org/images/avatars/default1.jpg",
+        rating: mangaDetails["rating"],
+        status: mangaDetails["status"],
+        langFlag: mangaDetails["langFlag"],
+        langName: mangaDetails["langName"],
+        artist: mangaDetails["artist"],
+        author: mangaDetails["author"],
+        avgRating: mangaDetails["avgRating"],
+        covers: mangaDetails["covers"],
+        desc: mangaDetails["description"],
+        follows: mangaDetails["follows"],
+        tags: [
+          createTagSection({
+            id: "content",
+            label: "Content",
+            tags: mangaDetails["content"].map((x: any) => createTag({ id: x["id"].toString(), label: x["value"] }))
+          }),
+          createTagSection({
+            id: "demographic",
+            label: "Demographic",
+            tags: mangaDetails["demographic"].map((x: any) => createTag({ id: x["id"].toString(), label: x["value"] }))
+          }),
+          createTagSection({
+            id: "format",
+            label: "Format",
+            tags: mangaDetails["format"].map((x: any) => createTag({ id: x["id"].toString(), label: x["value"] }))
+          }),
+          createTagSection({
+            id: "genre",
+            label: "Genre",
+            tags: mangaDetails["genre"].map((x: any) => createTag({ id: x["id"].toString(), label: x["value"] }))
+          }),
+          createTagSection({
+            id: "theme",
+            label: "Theme",
+            tags: mangaDetails["theme"].map((x: any) => createTag({ id: x["id"].toString(), label: x["value"] }))
+          })
+        ],
+        users: mangaDetails["users"],
+        views: mangaDetails["views"],
+        hentai: mangaDetails["hentai"],
+        relatedIds: mangaDetails["relatedIds"],
+        lastUpdate: mangaDetails["lastUpdate"]
+      }));
+    }
+
+    return mangas;
     }
     getChaptersRequest(mangaId: string): Request {
       throw new Error("Method not implemented.")
