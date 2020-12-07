@@ -13,7 +13,14 @@ export class Lilymanga extends Source {
     get authorWebsite(): string { return '' }
     get icon(): string { return "Lily-Manga.png" }
     get hentaiSource(): boolean { return false }
-    get sourceTags(): SourceTag[] { return [] }
+    get sourceTags(): SourceTag[] { 
+		return [
+		{
+			text: "Experimental",
+			type: TagType.RED
+		}
+		];	
+	}
     get rateLimit(): Number {
       return 2
     }
@@ -30,7 +37,7 @@ export class Lilymanga extends Source {
       for (let id of ids) {
         let metadata = { 'id': id }
         requests.push(createRequestObject({
-          url: `${SOURCE_DOMAIN}/${id}`,
+          url: `${SOURCE_DOMAIN}/ys/${id}`,
           metadata: metadata,
           method: 'GET'
         }))
